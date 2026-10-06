@@ -315,7 +315,12 @@ public class CalibrationServiceImpl implements CalibrationService {
                 synthetics = syntheticGenerationService.generateSynthetics(measStacks, frequencyBandParameterMap);
             }
 
-            List<SpectraMeasurement> spectra = spectraCalc.measureAmplitudes(synthetics, frequencyBandParameterMap, velocityConfig, stationFrequencyBandMap);
+            List<SpectraMeasurement> spectra;
+            if (persistResults) {
+                spectra = spectraMeasurementService.measureSpectra(synthetics, frequencyBandParameterMap, velocityConfig, stationFrequencyBandMap);
+            } else {
+                spectra = spectraCalc.measureAmplitudes(synthetics, frequencyBandParameterMap, velocityConfig, stationFrequencyBandMap);
+            }
 
             List<MeasuredMwParameters> measuredMwsParams = siteCalibrationService.fitMws(
                     spectraByFrequencyBand(spectra),

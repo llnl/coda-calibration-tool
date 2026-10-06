@@ -16,37 +16,28 @@ package gov.llnl.gnem.apps.coda.calibration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import gov.llnl.gnem.apps.coda.calibration.model.domain.SiteFrequencyBandParameters;
 import gov.llnl.gnem.apps.coda.calibration.model.domain.mixins.SharedFrequencyBandParametersJsonMixin;
 import gov.llnl.gnem.apps.coda.calibration.model.domain.mixins.SiteFrequencyBandParametersJsonMixin;
 import gov.llnl.gnem.apps.coda.common.model.domain.SharedFrequencyBandParameters;
+import tools.jackson.databind.DeserializationFeature;
 
 @Component
 @Configuration
 public class ConfigureJacksonMixins {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+    
     @Bean
-    public MappingJackson2HttpMessageConverter configureJackson() {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        ObjectMapper mapper = converter.getObjectMapper();
-        //As of Spring 6 the MappingJackson mapper doesn't include the JDK8+ module so we have to
-        //add it ourselves
-        mapper.registerModule(new Jdk8Module());
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        mapper.addMixIn(SharedFrequencyBandParameters.class, SharedFrequencyBandParametersJsonMixin.class);
-        mapper.addMixIn(SiteFrequencyBandParameters.class, SiteFrequencyBandParametersJsonMixin.class);
-        converter.setObjectMapper(mapper);
-        return converter;
+    public JsonMapperBuilderCustomizer jsonCustomizer() {
+        return builder -> builder
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .addMixIn(SharedFrequencyBandParameters.class, SharedFrequencyBandParametersJsonMixin.class)
+                .addMixIn(SiteFrequencyBandParameters.class, SiteFrequencyBandParametersJsonMixin.class);
     }
 }

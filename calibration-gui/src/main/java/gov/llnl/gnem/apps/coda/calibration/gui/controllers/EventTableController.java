@@ -559,9 +559,11 @@ public class EventTableController implements RefreshableController {
                     double maxCenterFreq = -1E2;
 
                     for (final SpectraMeasurement meas : spectralMeasurements) {
-                        final String evid = meas.getWaveform().getEvent().getEventId();
-                        final Double freq = centerFreq(meas.getWaveform());
-                        evidStats.computeIfAbsent(evid, key -> new HashMap<>()).computeIfAbsent(freq, key -> new SummaryStatistics()).addValue(meas.getPathAndSiteCorrected());
+                        if (meas.getPathAndSiteCorrected() != 0.0) {
+                            final String evid = meas.getWaveform().getEvent().getEventId();
+                            final Double freq = centerFreq(meas.getWaveform());
+                            evidStats.computeIfAbsent(evid, key -> new HashMap<>()).computeIfAbsent(freq, key -> new SummaryStatistics()).addValue(meas.getPathAndSiteCorrected());
+                        }
                     }
 
                     for (final Map<Double, SummaryStatistics> freqStats : evidStats.values()) {

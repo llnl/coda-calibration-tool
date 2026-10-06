@@ -10,3 +10,17 @@ log.roo
 .sonarlint
 *.log
 *.db
+pom.xml.versionsBackup
+.project**
+.classpath**
+*.class
+.settings**
+target/
+.factorypath
+.springBeans
+.vscode
+.attach_pid*
+.sts4-cache**
+*.jar
+site/
+*.orig

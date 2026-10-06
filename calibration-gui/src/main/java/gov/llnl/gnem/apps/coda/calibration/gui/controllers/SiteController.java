@@ -17,6 +17,8 @@ package gov.llnl.gnem.apps.coda.calibration.gui.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -30,6 +32,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -238,7 +241,8 @@ public class SiteController extends AbstractMeasurementController {
     protected void reloadData() {
         super.reloadData();
         siteTerms = paramClient.getSiteSpecificFrequencyBandParameters().filter(Objects::nonNull).collectList().block(Duration.of(10l, ChronoUnit.SECONDS));
-
+        siteTerms = siteTerms.stream().map(truncateFreqs()).collect(Collectors.toList());
+        
         Set<String> stationSet = new TreeSet<>();
         List<Symbol> symbols = new ArrayList<>();
 
@@ -355,10 +359,7 @@ public class SiteController extends AbstractMeasurementController {
 
                 List<Symbol> symbols = new ArrayList<>();
                 if (stationName != null) {
-                    List<SiteFrequencyBandParameters> relativeTerms = siteTerms.stream()
-                                                                               .filter(sfb -> stationName.equalsIgnoreCase(sfb.getStation().getStationName()))
-                                                                               .sorted((l, r) -> Double.compare(l.getLowFrequency(), r.getLowFrequency()))
-                                                                               .collect(Collectors.toList());
+                    List<SiteFrequencyBandParameters> relativeTerms = siteTerms.stream().filter(sfb -> stationName.equalsIgnoreCase(sfb.getStation().getStationName())).map(truncateFreqs()).sorted((l, r) -> Double.compare(l.getLowFrequency(), r.getLowFrequency())).collect(Collectors.toList());
 
                     if (relativeTerms != null && !relativeTerms.isEmpty()) {
                         for (SiteFrequencyBandParameters val : siteTerms) {
@@ -426,6 +427,16 @@ public class SiteController extends AbstractMeasurementController {
                 // NOP
             }
         }
+    }
+
+    private Function<? super SiteFrequencyBandParameters, ? extends SiteFrequencyBandParameters> truncateFreqs() {
+        return x -> {
+            //Truncate the frequencies at 12 digits to avoid floating point instability when
+            //we average the keys for plotting purposes
+            x.setLowFrequency(new BigDecimal(x.getLowFrequency()).setScale(12, RoundingMode.DOWN).doubleValue());
+            x.setHighFrequency(new BigDecimal(x.getHighFrequency()).setScale(12, RoundingMode.DOWN).doubleValue());
+            return x;
+        };
     }
 
     @Override

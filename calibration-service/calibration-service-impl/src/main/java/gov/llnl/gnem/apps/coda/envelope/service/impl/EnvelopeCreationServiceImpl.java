@@ -127,7 +127,7 @@ public class EnvelopeCreationServiceImpl implements EnvelopeCreationService {
             seis.Taper(1);
 
             seis.filter(4, Passband.BAND_PASS, bandConfig.getLowFrequency(), bandConfig.getHighFrequency(), true);
-
+            
             seis.Envelope();
             seis.Log10();
 

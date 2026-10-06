@@ -30,6 +30,7 @@ public class AppProperties {
     private Integer width = 600;
     private Boolean debugEnabled = Boolean.FALSE;
     private List<WMSLayerDescriptor> wmsLayers = new ArrayList<>();
+    private String version;
 
     public Boolean getDebugEnabled() {
         return debugEnabled;
@@ -69,5 +70,13 @@ public class AppProperties {
 
     public void setWmsLayers(List<WMSLayerDescriptor> wmsLayers) {
         this.wmsLayers = wmsLayers;
+    }
+
+    public String getVersion() {
+       return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

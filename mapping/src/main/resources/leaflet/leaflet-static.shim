@@ -846,12 +846,32 @@
 			attributionControl: false
 		}).setView([0, 0], 2);
 
+        map.createPane("country-pane");
+        map.getPane("country-pane").style.zIndex = 300;
+        map.getPane("country-pane").style.pointerEvents = 'none';
+
 		var iconGroup = L.featureGroup().addTo(map);
 		var lineGroup = L.layerGroup();
-
-		var basicOverlayMaps = {
-			"Icons": iconGroup
-		};
+		
+		var basicOverlayMaps;
+		if (typeof countryData !== "undefined") {
+	    		var countriesLayer = L.geoJson(countryData, {
+	            pane: 'country-pane',
+	            style: {
+	                color: "darkgreen"
+	            }
+	        }).addTo(map);
+	
+			basicOverlayMaps = {
+				"Icons": iconGroup,
+				"Countries": countriesLayer
+			};
+		}
+		else {
+			basicOverlayMaps = {
+				"Icons": iconGroup
+			};
+		}
 
 		var layerControl = L.control.layers(null, basicOverlayMaps, {
 			sortLayers: true

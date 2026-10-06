@@ -30,6 +30,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gov.llnl.gnem.apps.coda.common.mapping.api.GeoBox;
 import gov.llnl.gnem.apps.coda.common.mapping.api.GeoShape;
 import gov.llnl.gnem.apps.coda.common.mapping.api.Icon;
@@ -49,6 +52,8 @@ public class StaticHtmlLeafletMap {
         DFMT2.applyPattern("#.##");
     }
 
+    private static final Logger log = LoggerFactory.getLogger(StaticHtmlLeafletMap.class);
+
     private String title = "Map";
     private String htmlShim = null;
     private GeoBox bounds = null;
@@ -56,13 +61,13 @@ public class StaticHtmlLeafletMap {
     private Boolean plotScale = Boolean.TRUE;
     private double[] eventLegendSizes = null;
     private Set<String> wmsLayersToActivate = new HashSet<>(0);
+    private boolean includeCountryLayer = false;
 
     public StaticHtmlLeafletMap() {
         try (InputStream is = this.getClass().getResourceAsStream("/leaflet/leaflet-static.shim")) {
             htmlShim = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error("Unable to load static map shim file. Map will not function correctly! {}", e.getLocalizedMessage());
         }
     }
 
@@ -108,12 +113,32 @@ public class StaticHtmlLeafletMap {
         wmsLayersToActivate.add(layerName);
     }
 
+    public boolean isIncludeCountryLayer() {
+        return includeCountryLayer;
+    }
+
+    public void setIncludeCountryLayer(boolean includeCountryLayer) {
+        this.includeCountryLayer = includeCountryLayer;
+    }
+
     public String getHtml() {
         StringBuilder sb = new StringBuilder();
         sb.append(HTML_HEADER);
         sb.append("<title>");
         sb.append(title);
         sb.append("</title>");
+
+        if (includeCountryLayer) {
+            try (InputStream is = this.getClass().getResourceAsStream("/leaflet/countries.js")) {
+                sb.append("<script>");
+                String countries = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
+                sb.append(countries);
+                sb.append("</script>");
+            } catch (IOException e) {
+                log.warn("Unable to load country definition file into static map, skipping. {}", e.getLocalizedMessage());
+            }
+        }
+
         sb.append(htmlShim);
 
         sb.append("<script>");

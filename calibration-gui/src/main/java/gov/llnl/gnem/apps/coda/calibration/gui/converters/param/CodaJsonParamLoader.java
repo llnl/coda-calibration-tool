@@ -51,7 +51,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import gov.llnl.gnem.apps.coda.calibration.gui.converters.api.FileToParameterConverter;
 import gov.llnl.gnem.apps.coda.calibration.model.domain.CalibrationSettings;
@@ -80,8 +79,6 @@ public class CodaJsonParamLoader implements FileToParameterConverter<Object> {
 
     public CodaJsonParamLoader() {
         mapper = new ObjectMapper();
-        //Support for Optional<> types
-        mapper.registerModule(new Jdk8Module());
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.addMixIn(SharedFrequencyBandParameters.class, SharedFrequencyBandParametersFileMixin.class);
         mapper.addMixIn(SiteFrequencyBandParameters.class, SiteFrequencyBandParametersFileMixin.class);

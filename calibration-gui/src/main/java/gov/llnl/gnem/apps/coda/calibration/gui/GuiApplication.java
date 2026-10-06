@@ -27,6 +27,7 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner.Mode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -82,6 +83,7 @@ public class GuiApplication extends Application {
     }
 
     public GuiApplication() {
+        startupMode = ApplicationMode.CCT;
     }
 
     public GuiApplication(ConfigurableApplicationContext springContext, EventBus bus, ApplicationMode mode) {
@@ -135,9 +137,9 @@ public class GuiApplication extends Application {
 
         String baseTitle = "";
         if (GuiApplication.getStartupMode() == ApplicationMode.CCT) {
-            baseTitle = CCT_TITLE;
+            baseTitle = CCT_TITLE + " " + props.getVersion();
         } else {
-            baseTitle = CERT_TITLE;
+            baseTitle = CERT_TITLE + " " + props.getVersion();
         }
 
         props.setBaseTitle(baseTitle);

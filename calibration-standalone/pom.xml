@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>gov.llnl.gnem.apps.coda.calibration</groupId>
 		<artifactId>coda-calibration</artifactId>
-		<version>1.0.24</version>
+		<version>1.0.25</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -49,6 +49,7 @@
 							<Implementation-Build>${buildNumber}</Implementation-Build>
 							<Build-Branch>${scmBranch}</Build-Branch>
 							<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
+							<Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -62,7 +63,6 @@
 						<configuration>
 							<mainClass>
 								gov.llnl.gnem.apps.coda.calibration.standalone.CodaCalibrationStandalone</mainClass>
-							<executable>true</executable>
 							<classifier>runnable</classifier>
 							<excludeDevtools>true</excludeDevtools>
 						</configuration>
@@ -76,7 +76,6 @@
 						<configuration>
 							<mainClass>
 								gov.llnl.gnem.apps.coda.spectra.standalone.SpectraRatioStandalone</mainClass>
-							<executable>true</executable>
 							<classifier>ratios</classifier>
 							<excludeDevtools>true</excludeDevtools>
 						</configuration>
@@ -87,7 +86,28 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<delimiters>
+						<delimiter>@</delimiter>
+					</delimiters>
+					<useDefaultDelimiters>false</useDefaultDelimiters>
+				</configuration>
+			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources/filtered-resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 
 	<dependencies>
@@ -104,8 +124,8 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

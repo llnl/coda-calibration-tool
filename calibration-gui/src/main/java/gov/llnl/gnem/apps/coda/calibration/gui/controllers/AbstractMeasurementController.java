@@ -561,6 +561,7 @@ public abstract class AbstractMeasurementController implements MapListeningContr
         //Dyne-cm to Newton meters
         final DoubleSummaryStatistics stats = selectedEventMeasurements.stream()
                                                                        .filter(Objects::nonNull)
+                                                                       .filter(v -> v.getPathAndSiteCorrected() != 0.0)
                                                                        .map(val -> val.getPathAndSiteCorrected() - 7.0)
                                                                        .filter(v -> v != 0.0)
                                                                        .collect(Collectors.summarizingDouble(Double::doubleValue));
@@ -922,9 +923,11 @@ public abstract class AbstractMeasurementController implements MapListeningContr
                     double maxCenterFreq = -1E2;
 
                     for (final SpectraMeasurement meas : spectralMeasurements) {
-                        final String evid = meas.getWaveform().getEvent().getEventId();
-                        final Double freq = centerFreq(meas.getWaveform());
-                        evidStats.computeIfAbsent(evid, key -> new HashMap<>()).computeIfAbsent(freq, key -> new SummaryStatistics()).addValue(meas.getPathAndSiteCorrected() - 7.0);
+                        if (meas.getPathAndSiteCorrected() != 0.0) {
+                            final String evid = meas.getWaveform().getEvent().getEventId();
+                            final Double freq = centerFreq(meas.getWaveform());
+                            evidStats.computeIfAbsent(evid, key -> new HashMap<>()).computeIfAbsent(freq, key -> new SummaryStatistics()).addValue(meas.getPathAndSiteCorrected() - 7.0);
+                        }
                     }
 
                     for (final Map<Double, SummaryStatistics> freqStats : evidStats.values()) {
@@ -1054,24 +1057,26 @@ public abstract class AbstractMeasurementController implements MapListeningContr
             }
             Map<String, Map<Double, SummaryStatistics>> averageValues = new HashMap<>();
             for (SpectraMeasurement meas : filteredMeasurements) {
-                String key = meas.getWaveform().getEvent().getEventId()
-                        + "-"
-                        + meas.getWaveform().getStream().getStation().getNetworkName()
-                        + "-"
-                        + meas.getWaveform().getStream().getStation().getStationName();
-                valuesMap.computeIfAbsent(
-                        key,
-                            k -> new EventSpectraReport(meas.getWaveform().getEvent().getEventId(),
-                                                        meas.getWaveform().getStream().getStation().getNetworkName(),
-                                                        meas.getWaveform().getStream().getStation().getStationName(),
-                                                        new ArrayList<>()));
+                if (meas.getPathAndSiteCorrected() != 0.0) {
+                    String key = meas.getWaveform().getEvent().getEventId()
+                            + "-"
+                            + meas.getWaveform().getStream().getStation().getNetworkName()
+                            + "-"
+                            + meas.getWaveform().getStream().getStation().getStationName();
+                    valuesMap.computeIfAbsent(
+                            key,
+                                k -> new EventSpectraReport(meas.getWaveform().getEvent().getEventId(),
+                                                            meas.getWaveform().getStream().getStation().getNetworkName(),
+                                                            meas.getWaveform().getStream().getStation().getStationName(),
+                                                            new ArrayList<>()));
 
-                Double freq = centerFreq(meas.getWaveform());
-                valuesMap.get(key).add(new Pair<>(freq, meas.getPathAndSiteCorrected() - 7.0));
-                averageValues.computeIfAbsent(meas.getWaveform().getEvent().getEventId(), k -> new TreeMap<>()).computeIfAbsent(freq, x -> {
-                    SummaryStatistics sum = new SummaryStatistics();
-                    return sum;
-                }).addValue(meas.getPathAndSiteCorrected() - 7.0);
+                    Double freq = centerFreq(meas.getWaveform());
+                    valuesMap.get(key).add(new Pair<>(freq, meas.getPathAndSiteCorrected() - 7.0));
+                    averageValues.computeIfAbsent(meas.getWaveform().getEvent().getEventId(), k -> new TreeMap<>()).computeIfAbsent(freq, x -> {
+                        SummaryStatistics sum = new SummaryStatistics();
+                        return sum;
+                    }).addValue(meas.getPathAndSiteCorrected() - 7.0);
+                }
             }
 
             for (Entry<String, Map<Double, SummaryStatistics>> average : averageValues.entrySet()) {

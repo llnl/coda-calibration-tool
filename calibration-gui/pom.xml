@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>gov.llnl.gnem.apps.coda.calibration</groupId>
 		<artifactId>coda-calibration</artifactId>
-		<version>1.0.24</version>
+		<version>1.0.25</version>
 	</parent>
 
 	<artifactId>calibration-gui</artifactId>
@@ -174,7 +174,8 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<!-- Tells Eclipses m2e adapter to only execute this when using the maven->update project button -->
+						<!-- Tells Eclipses m2e adapter to only execute this
+						when using the maven->update project button -->
 						<?m2eexecute onConfiguration?>
 						<goals>
 							<goal>unpack</goal>
@@ -224,6 +225,7 @@
 							<Implementation-Build>${buildNumber}</Implementation-Build>
 							<Build-Branch>${scmBranch}</Build-Branch>
 							<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
+							<Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
 							<JavaFX-Preloader-Class>
 								gov.llnl.gnem.apps.coda.calibration.gui.CodaGuiPreloader</JavaFX-Preloader-Class>
 						</manifestEntries>
@@ -241,6 +243,27 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<delimiters>
+						<delimiter>@</delimiter>
+					</delimiters>
+					<useDefaultDelimiters>false</useDefaultDelimiters>
+				</configuration>
+			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources/filtered-resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 </project>

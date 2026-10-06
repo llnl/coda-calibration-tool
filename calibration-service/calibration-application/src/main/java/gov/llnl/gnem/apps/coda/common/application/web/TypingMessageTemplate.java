@@ -18,10 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.messaging.MessagingException;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import gov.llnl.gnem.apps.coda.common.model.util.MESSAGE_HEADERS;
 
@@ -31,8 +29,7 @@ public class TypingMessageTemplate {
 
     public TypingMessageTemplate(SimpMessagingTemplate template) {
         this.template = template;
-        MappingJackson2MessageConverter messageConverter = new MappingJackson2MessageConverter();
-        messageConverter.getObjectMapper().registerModule(new Jdk8Module());
+        JacksonJsonMessageConverter messageConverter = new JacksonJsonMessageConverter();
         this.template.setMessageConverter(messageConverter);
     }
 

@@ -17,15 +17,10 @@ package gov.llnl.gnem.apps.coda.calibration.gui;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.http.codec.json.JacksonJsonDecoder;
+import org.springframework.http.codec.json.JacksonJsonEncoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import gov.llnl.gnem.apps.coda.calibration.model.domain.SiteFrequencyBandParameters;
 import gov.llnl.gnem.apps.coda.calibration.model.domain.SpectraMeasurementMetadata;
@@ -35,34 +30,38 @@ import gov.llnl.gnem.apps.coda.calibration.model.domain.mixins.SharedFrequencyBa
 import gov.llnl.gnem.apps.coda.calibration.model.domain.mixins.SiteFrequencyBandParametersJsonMixin;
 import gov.llnl.gnem.apps.coda.common.model.domain.SharedFrequencyBandParameters;
 import gov.llnl.gnem.apps.coda.common.model.domain.WaveformMetadata;
+import tools.jackson.core.Version;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleAbstractTypeResolver;
+import tools.jackson.databind.module.SimpleModule;
 
 @Configuration
 public class WebfluxConfig {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
 
     @Autowired
-    public WebfluxConfig(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-        this.objectMapper.registerModule(new Jdk8Module());
-        this.objectMapper.addMixIn(SharedFrequencyBandParameters.class, SharedFrequencyBandParametersJsonMixin.class);
-        this.objectMapper.addMixIn(SiteFrequencyBandParameters.class, SiteFrequencyBandParametersJsonMixin.class);
+    public WebfluxConfig(JsonMapper.Builder builder) {
+        builder.addMixIn(SharedFrequencyBandParameters.class, SharedFrequencyBandParametersJsonMixin.class);
+        builder.addMixIn(SiteFrequencyBandParameters.class, SiteFrequencyBandParametersJsonMixin.class);
 
         SimpleModule module = new SimpleModule("SpectraMeasurementMapper", Version.unknownVersion());
         SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
         resolver.addMapping(SpectraMeasurementMetadata.class, SpectraMeasurementMetadataImpl.class);
         resolver.addMapping(WaveformMetadata.class, WaveformMetadataImpl.class);
         module.setAbstractTypes(resolver);
-        this.objectMapper.registerModule(module);
+        builder.addModule(module);
+        
+        this.objectMapper = builder.build();
     }
 
     @Bean
     public ExchangeStrategies configureJacksonExchangeStrategies() {
         return ExchangeStrategies.builder().codecs(clientCodecConfigurer -> {
-            Jackson2JsonDecoder decoder = new Jackson2JsonDecoder(objectMapper);
+            JacksonJsonDecoder decoder = new JacksonJsonDecoder(objectMapper);
             decoder.setMaxInMemorySize(-1);
             clientCodecConfigurer.customCodecs().registerWithDefaultConfig(decoder);
-            clientCodecConfigurer.customCodecs().registerWithDefaultConfig(new Jackson2JsonEncoder(objectMapper));
+            clientCodecConfigurer.customCodecs().registerWithDefaultConfig(new JacksonJsonEncoder(objectMapper));
             //Unlimited
             clientCodecConfigurer.defaultCodecs().maxInMemorySize(-1);
         }).build();

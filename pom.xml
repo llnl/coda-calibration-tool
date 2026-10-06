@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.llnl.gnem.apps.coda.calibration</groupId>
 	<artifactId>coda-calibration</artifactId>
-	<version>1.0.24</version>
+	<version>1.0.25</version>
 	<name>coda-calibration</name>
 
 	<packaging>pom</packaging>
@@ -65,45 +65,44 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<maven.compiler.plugin.version>3.12.1</maven.compiler.plugin.version>
-		<maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
-		<maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
-		<maven.shade.plugin.version>3.5.2</maven.shade.plugin.version>
-		<maven.jar.plugin.version>3.4.2</maven.jar.plugin.version>
-		<maven.source.plugin.version>3.3.0</maven.source.plugin.version>
+		<maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
+		<maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
+		<maven.surefire.plugin.version>3.5.5</maven.surefire.plugin.version>
+		<maven.shade.plugin.version>3.6.2</maven.shade.plugin.version>
+		<maven.jar.plugin.version>3.5.0</maven.jar.plugin.version>
+		<maven.source.plugin.version>3.4.0</maven.source.plugin.version>
 
-		<jfx.version>17.0.11</jfx.version>
-		<!-- 17.0.11 introduced regressions with WebKit, have to hold off for
-		now -->
-		<jfx-web.version>17.0.10</jfx-web.version>
+		<jfx.version>17.0.19-ea+2</jfx.version>
+		<jfx-web.version>17.0.19-ea+2</jfx-web.version>
 
-		<jaxb-api.version>4.0.1</jaxb-api.version>
-		<spring.boot.version>3.4.1</spring.boot.version>
-		<reactor.version>2023.0.3</reactor.version>
+		<jaxb-api.version>4.0.5</jaxb-api.version>
+		<spring.boot.version>4.1.1</spring.boot.version>
+		<reactor.version>2025.0.4</reactor.version>
 
-		<jakarta.persistence.version>3.1.0</jakarta.persistence.version>
-		<jakarta.validation.version>3.0.2</jakarta.validation.version>
-		<org.apache.xmlgraphics.batik-script.version>1.17</org.apache.xmlgraphics.batik-script.version>
+		<jakarta.persistence.version>3.2.0</jakarta.persistence.version>
+		<jakarta.validation.version>4.0.0-M1</jakarta.validation.version>
+		<org.apache.xmlgraphics.batik-script.version>1.19</org.apache.xmlgraphics.batik-script.version>
 		<xml.apis.ext.version>1.3.04</xml.apis.ext.version>
-		<geographiclib.java.version>2.0</geographiclib.java.version>
-		<eclipse.collections.version>12.0.0.M3</eclipse.collections.version>
-		<jakarta.annotation.version>3.0.0-M1</jakarta.annotation.version>
-		<jts.version>1.19.0</jts.version>
+		<geographiclib.java.version>2.1</geographiclib.java.version>
+		<eclipse.collections.version>13.0.0</eclipse.collections.version>
+		<jakarta.annotation.version>3.0.0</jakarta.annotation.version>
+		<jts.version>1.20.0</jts.version>
 		<jts2geojson.version>0.18.1</jts2geojson.version>
-		<springdoc.version>2.6.0</springdoc.version>
-		<hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
+		<springdoc.version>3.0.2</springdoc.version>
+		<hibernate.validator.version>9.1.0.Final</hibernate.validator.version>
 
 		<!-- GUI Specific -->
-		<tyrus.standalone.client.version>2.1.5</tyrus.standalone.client.version>
-		<commons.compress.version>1.26.0</commons.compress.version>
+		<tyrus.standalone.client.version>2.2.2</tyrus.standalone.client.version>
+		<commons.compress.version>1.28.0</commons.compress.version>
 		<commons.math3.version>3.6.1</commons.math3.version>
-		<guava.version>33.4.0-jre</guava.version>
+		<guava.version>33.5.0-jre</guava.version>
 		<failsafe.version>2.4.4</failsafe.version>
+		<maven.dependency.plugin.version>3.10.0</maven.dependency.plugin.version>
 
 		<!-- Testing -->
-		<spring.test.version>6.2.2</spring.test.version>
-		<junit.jupiter.version>5.11.4</junit.jupiter.version>
-		<mockito.version>5.15.2</mockito.version>
+		<spring.test.version>7.0.9</spring.test.version>
+		<junit.jupiter.version>6.1.0-M1</junit.jupiter.version>
+		<mockito.version>5.23.0</mockito.version>
 
 		<!-- CVE overrides -->
 		<log4j2.version>3.0.0-beta2</log4j2.version>
@@ -118,22 +117,16 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.springdoc</groupId>
-				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-				<version>${springdoc.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-core</artifactId>
 				<version>${log4j2.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-api</artifactId>
-				<version>${log4j2.version}</version>
-			</dependency>
 
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+				<version>${springdoc.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.eclipse.collections</groupId>
 				<artifactId>eclipse-collections-api</artifactId>
@@ -356,6 +349,11 @@
 				<artifactId>spring-boot-starter-web</artifactId>
 				<version>${spring.boot.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-logging</artifactId>
+				<version>${spring.boot.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>jakarta.persistence</groupId>
@@ -387,13 +385,10 @@
 				<groupId>xml-apis</groupId>
 				<artifactId>xml-apis</artifactId>
 				<!-- Note the xml-apis maven repo is hosed and their versions
-				make no 
-					sense so I am pinning this one specifically to not
-				auto-update as we are 
-					liable to go backwards! -->
+				make no sense so I am pinning this one specifically to not
+				auto-update as we are liable to go backwards! -->
 				<!-- i.e. xml-apis 2.0.2 was released in 2005, 1.4.01 in 2011,
-				and 1.0.b2 
-					in 2007! -->
+				and 1.0.b2 in 2007! -->
 				<version>1.4.01</version>
 			</dependency>
 			<dependency>
@@ -492,12 +487,23 @@
 				<artifactId>jakarta.annotation-api</artifactId>
 				<version>${jakarta.annotation.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>1.3.2</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${maven.dependency.plugin.version}</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
@@ -546,11 +552,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven.surefire.plugin.version}</version>
-					<configuration>
-						<!-- see:
-						https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
-						<useSystemClassLoader>false</useSystemClassLoader>
-					</configuration>
 				</plugin>
 
 				<plugin>

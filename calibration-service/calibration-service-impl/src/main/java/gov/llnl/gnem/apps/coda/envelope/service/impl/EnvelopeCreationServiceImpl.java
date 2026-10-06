@@ -122,14 +122,13 @@ public class EnvelopeCreationServiceImpl implements EnvelopeCreationService {
                 maxNeededRate = bandConfig.getInterpolation();
             }
 
-            seis.RemoveMean();
-            seis.removeTrend();
-            seis.Taper(1);
-
             seis.filter(4, Passband.BAND_PASS, bandConfig.getLowFrequency(), bandConfig.getHighFrequency(), true);
 
             seis.Envelope();
             seis.Log10();
+            seis.RemoveMean();
+            seis.removeTrend();
+            seis.Taper(1);
 
             int smoothing = bandConfig.getSmoothing();
 

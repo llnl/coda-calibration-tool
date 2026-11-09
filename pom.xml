@@ -76,7 +76,7 @@
 		<jfx-web.version>17.0.19-ea+2</jfx-web.version>
 
 		<jaxb-api.version>4.0.5</jaxb-api.version>
-		<spring.boot.version>4.1.1</spring.boot.version>
+		<spring.boot.version>4.1.2</spring.boot.version>
 		<reactor.version>2025.0.4</reactor.version>
 
 		<jakarta.persistence.version>3.2.0</jakarta.persistence.version>
